@@ -88,17 +88,17 @@ class FeatureTests(TestCase):
             msg="Could not find the description textarea",
         )
 
-    def test_form_has_members_select(self):
+    def test_form_has_owner_select(self):
         form = self.document.select("html", "body", "main", "div", "form")
         selects = form.get_all_children("select")
-        members = None
+        owner = None
         for select in selects:
-            if select.attrs.get("name") == "members":
-                members = select
+            if select.attrs.get("name") == "owner":
+                owner = select
                 break
         self.assertIsNotNone(
-            members,
-            msg="Could not find the members select",
+            owner,
+            msg="Could not find the owner select",
         )
 
     def test_form_has_button(self):
@@ -120,7 +120,7 @@ class FeatureTests(TestCase):
             {
                 "name": "ZZZZZZ",
                 "description": "AAAAAA",
-                "members": str(self.noor.id),
+                "owner": str(self.noor.id),
             },
         )
         self.assertEqual(
@@ -129,19 +129,19 @@ class FeatureTests(TestCase):
             msg="Project creation does not seem to work",
         )
 
-    def test_create_redirects_to_detail(self):
+    def test_create_redirects_to_list_of_projects(self):
         response = self.client.post(
             reverse("create_project"),
             {
                 "name": "ZZZZZZ",
                 "description": "AAAAAA",
-                "members": str(self.noor.id),
+                "owner": str(self.noor.id),
             },
         )
-        project = Project.objects.get(name="ZZZZZZ")
+        Project.objects.get(name="ZZZZZZ")
         self.assertEqual(
             response.headers.get("Location"),
-            reverse("show_project", args=[project.id]),
+            reverse("list_projects"),
             msg="Create does not redirect to detail",
         )
 

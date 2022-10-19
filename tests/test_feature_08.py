@@ -33,7 +33,8 @@ class FeatureTests(TestCase):
     def test_projects_list_shows_no_member_projects_when_none_exist(self):
         self.login()
         project = Project.objects.create(name="Project", description="Project")
-        project.members.add(self.alisha)
+        project.owner = self.alisha
+        project.save()
         response = self.client.get(reverse("list_projects"))
         document = Document()
         document.feed(response.content.decode("utf-8"))
@@ -51,7 +52,8 @@ class FeatureTests(TestCase):
     def test_projects_list_shows_no_projects_when_member_of_one(self):
         self.login()
         project = Project.objects.create(name="ZZZZZZ", description="AAAAAA")
-        project.members.add(self.noor)
+        project.owner = self.noor
+        project.save()
         response = self.client.get(reverse("list_projects"))
         document = Document()
         document.feed(response.content.decode("utf-8"))

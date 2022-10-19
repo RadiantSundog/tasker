@@ -49,14 +49,3 @@ class FeatureTests(TestCase):
                 302,
                 msg="Logout did not seem to work",
             )
-
-    def test_logout_redirect_url_set(self):
-        self.assertTrue(
-            hasattr(settings, "LOGOUT_REDIRECT_URL"),
-            msg="Could not find LOGOUT_REDIRECT_URL in settings",
-        )
-        self.assertEqual(
-            settings.LOGOUT_REDIRECT_URL,
-            "login",
-            msg="LOGOUT_REDIRECT_URL not set to 'login'",
-        )

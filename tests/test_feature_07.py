@@ -94,17 +94,6 @@ class FeatureTests(TestCase):
             msg="Could not find the 'Login' button",
         )
 
-    def test_login_redirect_url_set(self):
-        self.assertTrue(
-            hasattr(settings, "LOGIN_REDIRECT_URL"),
-            msg="Could not find LOGIN_REDIRECT_URL in settings",
-        )
-        self.assertEqual(
-            settings.LOGIN_REDIRECT_URL,
-            "home",
-            msg="LOGIN_REDIRECT_URL not set to 'home'",
-        )
-
     def test_login_works(self):
         User.objects.create_user("noor", password="1234abcd.")
         response = self.client.post(

@@ -20,7 +20,8 @@ class FeatureTests(TestCase):
         self.project = Project.objects.create(
             name="ZZZZZZ", description="AAAAA"
         )
-        self.project.members.add(self.noor)
+        self.project.owner = self.noor
+        self.project.save()
 
     def test_project_detail_returns_200(self):
         path = reverse("show_project", args=[self.project.id])

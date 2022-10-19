@@ -1,37 +1,13 @@
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.utils import timezone
 
 from .utils import Document
-from projects.models import Project
-from tasks.models import Task
 
 
 class FeatureTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.login()
-        self.no_task_response = self.client.get("/tasks/mine/")
-        self.content = self.no_task_response.content.decode("utf-8")
-        self.no_task_document = Document()
-        self.no_task_document.feed(self.content)
-        self.project = Project.objects.create(
-            name="ZZZZZZ",
-            description="AAAAAA",
-        )
-        self.task = Task.objects.create(
-            name="YYYYYY",
-            start_date=timezone.now(),
-            due_date=timezone.now(),
-            project=self.project,
-            assignee=self.noor,
-        )
-        self.task_response = self.client.get("/tasks/mine/")
-        self.content = self.task_response.content.decode("utf-8")
-        self.task_document = Document()
-        self.task_document.feed(self.content)
-        self.project.members.add(self.noor)
 
     def login(self):
         self.noor_credentials = {"username": "noor", "password": "1234abcd."}
@@ -41,112 +17,48 @@ class FeatureTests(TestCase):
         )
         self.client.post(reverse("login"), self.noor_credentials)
 
-    def test_show_my_tasks_resolves_to_path(self):
-        path = reverse("show_my_tasks")
-        self.assertEqual(
-            path,
-            "/tasks/mine/",
-            msg="The 'show_my_tasks' did not resolve to the expected path",
-        )
-
-    def test_my_tasks_with_no_tasks_shows_message(self):
-        html = self.no_task_document.select("html")
-        self.assertIn(
-            "You have no tasks",
-            html.inner_text(),
-            msg="Did not find the message 'You have no tasks'",
-        )
-
-    def test_my_tasks_with_one_task_to_see_task_name(self):
-        html = self.task_document.select("html")
-        self.assertIn(
-            "YYYYYY",
-            html.inner_text(),
-            msg="Did not find the name of the task assigned to the user",
-        )
-
-    def test_my_tasks_with_one_task_to_see_task_status(self):
-        html = self.task_document.select("html")
-        self.assertNotIn(
-            "Done",
-            html.inner_text(),
-            msg="Found the word 'Done' when I shouldn't have",
-        )
-
-    def test_my_tasks_with_one_task_has_a_button(self):
-        html = self.task_document.select("html")
-        buttons = html.get_all_children("button")
-        self.assertEqual(
-            len(buttons),
-            1,
-            msg="Found more than one button",
-        )
-        self.assertIn(
-            "Complete",
-            buttons[0].inner_text(),
-            msg="Could not find 'Complete' in the button text",
-        )
-
-    def test_my_tasks_with_one_task_has_four_td_tags(self):
-        html = self.task_document.select("html")
-        cells = html.get_all_children("td")
-        self.assertEqual(
-            len(cells),
-            4,
-            msg="Should only have td tags for data rows",
-        )
-
-    def test_has_h1_tag_for_no_tasks(self):
-        h1 = self.no_task_document.select("html", "body", "main", "div", "h1")
-        self.assertIsNotNone(
-            h1,
-            msg="Could not find h1 tag at html > body > main > div > h1",
-        )
-        self.assertIn(
-            "My Tasks",
-            h1.inner_text(),
-            msg="Could not find 'My Tasks' in the h1 tag",
-        )
-
-    def test_has_h1_tag_for_tasks(self):
-        h1 = self.task_document.select("html", "body", "main", "div", "h1")
-        self.assertIsNotNone(
-            h1,
-            msg="Could not find h1 tag at html > body > main > div > h1",
-        )
-        self.assertIn(
-            "My Tasks",
-            h1.inner_text(),
-            msg="Could not find 'My Tasks' in the h1 tag",
-        )
-
-    def test_complete_task_resovles(self):
-        path = reverse("complete_task", args=[1])
-        self.assertEqual(
-            path,
-            "/tasks/1/complete/",
-            msg="The 'complete_tasks' does not seem to be properly registered",
-        )
-
-    def test_update_view_redirects_to_my_tasks(self):
-        path = reverse("complete_task", args=[self.task.id])
-        response = self.client.post(path, {"is_completed": "True"})
-        self.assertEqual(
-            response.status_code,
-            302,
-            msg="Complete task view does not redirect",
-        )
-        self.assertEqual(
-            response.headers.get("Location"),
-            reverse("show_my_tasks"),
-            msg="Complete task view does not redirect to 'My Tasks'",
-        )
-
-    def test_update_view_updates_task_is_completed(self):
-        path = reverse("complete_task", args=[self.task.id])
-        self.client.post(path, {"is_completed": "True"})
-        task = Task.objects.get(id=self.task.id)
+    def test_logged_out_user_has_login_and_signup_links(self):
+        response = self.client.get(reverse("login"))
+        content = response.content.decode("utf-8")
+        document = Document()
+        document.feed(content)
+        nav = document.select("html", "body", "header", "nav")
+        has_login = False
+        has_signup = False
+        links = nav.get_all_children("a")
+        for link in links:
+            if link.attrs.get("href", "").startswith(reverse("login")):
+                has_login = True
+            elif link.attrs.get("href", "").startswith(reverse("signup")):
+                has_signup = True
         self.assertTrue(
-            task.is_completed,
-            msg="Complete task view does not update the task status",
+            has_login and has_signup,
+            msg="Could not find a login and signup link for a logged out user",
+        )
+
+    def test_logged_in_user_has_projects_tasks_and_logout_links(self):
+        self.login()
+        response = self.client.get(reverse("login"))
+        content = response.content.decode("utf-8")
+        document = Document()
+        document.feed(content)
+        nav = document.select("html", "body", "header", "nav")
+        has_logout = False
+        has_projects = False
+        has_tasks = False
+        links = nav.get_all_children("a")
+        for link in links:
+            if link.attrs.get("href", "").startswith(reverse("logout")):
+                has_logout = True
+            elif link.attrs.get("href", "").startswith(
+                reverse("list_projects")
+            ):
+                has_projects = True
+            elif link.attrs.get("href", "").startswith(
+                reverse("show_my_tasks")
+            ):
+                has_tasks = True
+        self.assertTrue(
+            has_logout and has_projects and has_tasks,
+            msg="Could not find a logout, projects, and tasks link for a logged in user",  # noqa: E501
         )

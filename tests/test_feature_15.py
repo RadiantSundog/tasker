@@ -18,8 +18,8 @@ class FeatureTests(TestCase):
         self.project = Project.objects.create(
             name="ZZZZZZ",
             description="AAAAAA",
+            owner=self.noor,
         )
-        self.project.members.add(self.noor)
 
     def login(self):
         self.noor_credentials = {"username": "noor", "password": "1234abcd."}

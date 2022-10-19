@@ -299,8 +299,8 @@ class FeatureTests(TestCase):
             assignee = Task.assignee
             self.assertEqual(
                 assignee.field.remote_field.on_delete,
-                models.SET_NULL,
-                msg="Task.assignee should have SET_NULL for on delete",  # noqa: E501
+                models.CASCADE,
+                msg="Task.assignee should have CASCADE for on delete",  # noqa: E501
             )
         except ModuleNotFoundError:
             self.fail("Could not find 'tasks.models'")
@@ -308,18 +308,3 @@ class FeatureTests(TestCase):
             self.fail("Could not find 'tasks.models.Task'")
         except AttributeError:
             self.fail("Could not find 'Task.assignee'")
-
-    def test_task_str_method_returns_name(self):
-        try:
-            from tasks.models import Task
-
-            task = Task(name="My task")
-            self.assertEqual(
-                str(task),
-                "My task",
-                msg="Task.__str__ does not return the value of Task.name",  # noqa: E501
-            )
-        except ModuleNotFoundError:
-            self.fail("Could not find 'tasks.models'")
-        except ImportError:
-            self.fail("Could not find 'tasks.models.Task'")

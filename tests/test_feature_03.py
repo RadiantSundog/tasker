@@ -122,69 +122,54 @@ class FeatureTests(TestCase):
         except AttributeError:
             self.fail("Could not find 'Project.description'")
 
-    def test_project_model_has_members_many_to_many_field(self):
+    def test_project_model_has_an_owner(self):
         try:
             from projects.models import Project
 
-            members = Project.members
+            owner = Project.owner
             self.assertIsInstance(
-                members.field,
-                models.ManyToManyField,
-                msg="Project.members should be a many-to-many field",
+                owner.field,
+                models.ForeignKey,
+                msg="Project.owner should be a foreign key field",
             )
         except ModuleNotFoundError:
             self.fail("Could not find 'projects.models'")
         except ImportError:
             self.fail("Could not find 'projects.models.Project'")
         except AttributeError:
-            self.fail("Could not find 'Project.members'")
+            self.fail("Could not find 'Project.owner'")
 
-    def test_project_model_has_members_related_name_of_projects(self):
+    def test_project_model_has_owner_related_name_of_projects(self):
         try:
             from projects.models import Project
 
-            members = Project.members
+            owner = Project.owner
             self.assertEqual(
-                members.field.related_query_name(),
+                owner.field.related_query_name(),
                 "projects",
-                msg="Project.members should have a related name of 'projects'",
+                msg="Project.owner should have a related name of 'projects'",
             )
         except ModuleNotFoundError:
             self.fail("Could not find 'projects.models'")
         except ImportError:
             self.fail("Could not find 'projects.models.Project'")
         except AttributeError:
-            self.fail("Could not find 'Project.members'")
+            self.fail("Could not find 'Project.owner'")
 
-    def test_project_model_has_members_related_to_auth_user(self):
+    def test_project_model_has_owner_related_to_auth_user(self):
         try:
             from django.contrib.auth.models import User
             from projects.models import Project
 
-            members = Project.members
+            owner = Project.owner
             self.assertEqual(
-                members.field.related_model,
+                owner.field.related_model,
                 User,
-                msg="Project.members should be related to the 'auth.User' model",  # noqa: E501
+                msg="Project.owner should be related to the 'auth.User' model",  # noqa: E501
             )
         except ModuleNotFoundError:
             self.fail("Could not find 'projects.models'")
         except ImportError:
             self.fail("Could not find 'projects.models.Project'")
         except AttributeError:
-            self.fail("Could not find 'Project.members'")
-
-    def test_project_str_method_returns_name(self):
-        try:
-            from projects.models import Project
-
-            project = Project(name="My project")
-            self.assertEqual(
-                str(project),
-                "My project",
-                msg="Project.__str__ does not return the value of Project.name",  # noqa: E501
-            )
-        except ModuleNotFoundError:
-            self.fail("Could not find 'projects.models'")
-        except ImportError:
-            self.fail("Could not find 'projects.models.Project'")
+            self.fail("Could not find 'Project.owner'")
