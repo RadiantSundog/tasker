@@ -1,5 +1,8 @@
 from django.test import TestCase
 from django.db import models
+from django.utils import timezone
+from django.db.utils import OperationalError
+from django.contrib.auth.models import User
 
 
 class FeatureTests(TestCase):
@@ -308,3 +311,32 @@ class FeatureTests(TestCase):
             self.fail("Could not find 'tasks.models.Task'")
         except AttributeError:
             self.fail("Could not find 'Task.assignee'")
+
+    def test_task_can_create_tasks(self):
+        try:
+            from projects.models import Project
+            from tasks.models import Task
+
+            user = User.objects.create_user("testuser")
+            project = Project.objects.create(
+                name="Test Project",
+                description="Test Description",
+                owner=user,
+            )
+            try:
+                Task.objects.create(
+                    name="Test Task",
+                    start_date=timezone.now(),
+                    due_date=timezone.now(),
+                    project=project,
+                    assignee=user,
+                )
+            except OperationalError:
+                self.fail(
+                    "Could not create a task because there was no database table"
+                )
+
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models'")
+        except ImportError:
+            self.fail("Could not find 'tasks.models.Project'")

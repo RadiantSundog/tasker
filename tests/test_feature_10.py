@@ -43,16 +43,17 @@ class FeatureTests(TestCase):
                 "html > body > main > div > form"
             ),
         )
-        self.assertIn(
-            "method",
-            form.attrs,
-            msg="Did not find 'method' for the form",
-        )
-        self.assertEqual(
-            form.attrs.get("method").lower(),
-            "post",
-            msg="Form was not a post form",
-        )
+        if form:
+            self.assertIn(
+                "method",
+                form.attrs,
+                msg="Did not find 'method' for the form",
+            )
+            self.assertEqual(
+                form.attrs.get("method").lower(),
+                "post",
+                msg="Form was not a post form",
+            )
 
     def test_form_has_username_input(self):
         form = self.document.select("html", "body", "main", "div", "form")
@@ -69,6 +70,10 @@ class FeatureTests(TestCase):
 
     def test_form_has_password_input(self):
         form = self.document.select("html", "body", "main", "div", "form")
+        if not form:
+            self.fail(
+                "Did not find the form at the path html > body > main > div > form"
+            )
         inputs = form.get_all_children("input")
         password = None
         for input in inputs:
@@ -82,6 +87,10 @@ class FeatureTests(TestCase):
 
     def test_form_has_password2_input(self):
         form = self.document.select("html", "body", "main", "div", "form")
+        if not form:
+            self.fail(
+                "Did not find the form at the path html > body > main > div > form"
+            )
         inputs = form.get_all_children("input")
         password = None
         for input in inputs:
@@ -95,6 +104,10 @@ class FeatureTests(TestCase):
 
     def test_form_has_button(self):
         form = self.document.select("html", "body", "main", "div", "form")
+        if not form:
+            self.fail(
+                "Did not find the form at the path html > body > main > div > form"
+            )
         buttons = form.get_all_children("button")
         button = None
         for button in buttons:

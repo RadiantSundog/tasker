@@ -1,5 +1,7 @@
 from django.test import TestCase
 from django.db import models
+from django.db.utils import OperationalError
+from django.contrib.auth.models import User
 
 
 class FeatureTests(TestCase):
@@ -167,6 +169,47 @@ class FeatureTests(TestCase):
                 User,
                 msg="Project.owner should be related to the 'auth.User' model",  # noqa: E501
             )
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models'")
+        except ImportError:
+            self.fail("Could not find 'projects.models.Project'")
+        except AttributeError:
+            self.fail("Could not find 'Project.owner'")
+
+    def test_project_model_has_nullable_owner(self):
+        try:
+            from projects.models import Project
+
+            owner = Project.owner
+            self.assertEqual(
+                owner.field.null,
+                True,
+                msg="Project.owner should be nullable",  # noqa: E501
+            )
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models'")
+        except ImportError:
+            self.fail("Could not find 'projects.models.Project'")
+        except AttributeError:
+            self.fail("Could not find 'Project.owner'")
+
+    def test_project_can_create_projects(self):
+        try:
+            from projects.models import Project
+
+            user = User.objects.create_user("testuser")
+
+            try:
+                Project.objects.create(
+                    name="Test Project",
+                    description="Test Description",
+                    owner=user,
+                )
+            except OperationalError:
+                self.fail(
+                    "Could not create a project because there was no database table"
+                )
+
         except ModuleNotFoundError:
             self.fail("Could not find 'projects.models'")
         except ImportError:

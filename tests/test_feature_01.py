@@ -25,8 +25,8 @@ class FeatureTests(TestCase):
         except ModuleNotFoundError:
             self.fail("Could not find 'flake8' installed in the environment")
 
-    def test_djhtml_installed(self):
+    def test_djlint_installed(self):
         try:
-            import djhtml  # noqa: F401
+            import djlint  # noqa: F401
         except ModuleNotFoundError:
-            self.fail("Could not find 'djhtml' installed in the environment")
+            self.fail("Could not find 'djlint' installed in the environment")
