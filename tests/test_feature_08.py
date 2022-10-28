@@ -3,7 +3,6 @@ from django.test import TestCase, Client
 from django.urls import reverse
 
 from .utils import Document
-from projects.models import Project
 
 
 class FeatureTests(TestCase):
@@ -31,6 +30,10 @@ class FeatureTests(TestCase):
         )
 
     def test_projects_list_shows_no_member_projects_when_none_exist(self):
+        try:
+            from projects.models import Project  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models.Project'")
         self.login()
         project = Project.objects.create(name="Project", description="Project")
         project.owner = self.alisha
@@ -50,6 +53,10 @@ class FeatureTests(TestCase):
         )
 
     def test_projects_list_shows_no_projects_when_member_of_one(self):
+        try:
+            from projects.models import Project  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models.Project'")
         self.login()
         project = Project.objects.create(name="ZZZZZZ", description="AAAAAA")
         project.owner = self.noor

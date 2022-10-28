@@ -4,12 +4,14 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .utils import Document
-from projects.models import Project
-from tasks.models import Task
 
 
 class FeatureTests(TestCase):
     def setUp(self):
+        try:
+            from projects.models import Project  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models.Project'")
         self.client = Client()
         self.login()
         self.no_task_response = self.client.get("/tasks/mine/")
@@ -21,6 +23,10 @@ class FeatureTests(TestCase):
             description="AAAAAA",
             owner=self.noor,
         )
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         self.task = Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),

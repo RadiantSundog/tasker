@@ -4,7 +4,6 @@ from django.test import TestCase, Client
 from django.urls import reverse
 
 from .utils import Document
-from projects.models import Project
 
 
 class FeatureTests(TestCase):
@@ -130,6 +129,10 @@ class FeatureTests(TestCase):
         )
 
     def test_create_redirects_to_list_of_projects(self):
+        try:
+            from projects.models import Project  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models.Project'")
         response = self.client.post(
             reverse("create_project"),
             {

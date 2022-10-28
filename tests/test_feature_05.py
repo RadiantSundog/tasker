@@ -1,7 +1,8 @@
 from django.test import TestCase, Client
 
 from .utils import Document
-from projects.models import Project
+
+# from projects.models import Project
 
 
 class FeatureTests(TestCase):
@@ -134,6 +135,10 @@ class FeatureTests(TestCase):
     def test_div_tag_has_a_table_with_headers_name_and_number(
         self,
     ):
+        try:
+            from projects.models import Project  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models.Project'")
         Project.objects.bulk_create(
             [
                 Project(name="ZZZZZZ", description="AAAAA"),
@@ -170,6 +175,10 @@ class FeatureTests(TestCase):
     def test_div_tag_has_a_table_tag_when_projects_exist_with_project_names(
         self,
     ):
+        try:
+            from projects.models import Project  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models.Project'")
         Project.objects.bulk_create(
             [
                 Project(name="ZZZZZZ", description="AAAAA"),

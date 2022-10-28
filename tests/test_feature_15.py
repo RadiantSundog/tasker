@@ -4,11 +4,14 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .utils import Document
-from projects.models import Project
 
 
 class FeatureTests(TestCase):
     def setUp(self):
+        try:
+            from projects.models import Project  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models.Project'")
         self.client = Client()
         self.login()
         self.response = self.client.get("/tasks/create/")

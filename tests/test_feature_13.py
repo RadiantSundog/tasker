@@ -4,12 +4,14 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .utils import Document
-from projects.models import Project
-from tasks.models import Task
 
 
 class FeatureTests(TestCase):
     def setUp(self):
+        try:
+            from projects.models import Project  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'projects.models.Project'")
         self.client = Client()
         self.noor_credentials = {"username": "noor", "password": "1234abcd."}
         self.noor = User.objects.create_user(**self.noor_credentials)
@@ -57,6 +59,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_task_name(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         task = Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -76,6 +82,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_task_start_date(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         task = Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -95,6 +105,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_task_due_date(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         task = Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -114,6 +128,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_assignee(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -133,6 +151,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_is_completed(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -152,6 +174,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_name_header(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -171,6 +197,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_assignee_header(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -190,6 +220,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_start_date_header(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -209,6 +243,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_due_date_header(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -228,6 +266,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_detail_with_a_tasks_shows_is_completed_header(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
@@ -265,6 +307,10 @@ class FeatureTests(TestCase):
         )
 
     def test_project_list_has_number_of_tasks(self):
+        try:
+            from tasks.models import Task  # noqa: F401
+        except ModuleNotFoundError:
+            self.fail("Could not find 'tasks.models.Task'")
         Task.objects.create(
             name="YYYYYY",
             start_date=timezone.now(),
