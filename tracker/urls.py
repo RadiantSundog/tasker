@@ -27,4 +27,5 @@ urlpatterns = [
     path("", redirect_to_list_projects),
     path("admin/", admin.site.urls),
     path("projects/", include("projects.urls")),
+    path("accounts/", include("accounts.urls")),
 ]
