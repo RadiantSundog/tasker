@@ -10,6 +10,7 @@
     <main>
         <div>
             <h1>My Projects</h1>
+            <a href="{% url 'create_project' %}">Create a new project</a>
             {% if list_projects is None %}
             <p>You are not assigned to any projects</p>
             {% else %}
