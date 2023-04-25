@@ -12,6 +12,7 @@
             <h1>{{ project_object.name }}</h1>
             <p>{{ project_object.description }}</p>
             <h2>Tasks</h2>
+            <a href="{% url 'create_task' %}">Create a new task</a>
             {% comment %} {% if tasks is not None %} {% endcomment %}
                 <table>
                     <thead>
