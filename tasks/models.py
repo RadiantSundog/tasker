@@ -21,3 +21,6 @@ class Task(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
+
+    def __str__(self):
+        return self.name

@@ -11,22 +11,12 @@
         <nav>
             <ul>
                 {% if user.is_authenticated %}
-                    <li>
-                        <a href="{% url 'show_my_tasks' %}">My tasks</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'list_projects' %}">My projects</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'logout' %}">Logout</a>
-                    </li>
+                    <li><a href="{% url 'show_my_tasks' %}">My tasks</a></li>
+                    <li><a href="{% url 'list_projects' %}">My projects</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
                 {% else %}
-                    <li>
-                        <a href="{% url 'login' %}">Login</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'signup' %}">Signup</a>
-                    </li>
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'signup' %}">Signup</a></li>
                 {% endif %}
             </ul>
         </nav>
@@ -37,7 +27,7 @@
             <p>{{ project_object.description }}</p>
             <h2>Tasks</h2>
             <a href="{% url 'create_task' %}">Create a new task</a>
-            {% comment %} {% if show_project %} {% endcomment %}
+            {% if task_object %}
                 <table>
                     <thead>
                         <tr>
@@ -49,20 +39,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for item in show_project %}
+                    {% for item in task_object %}
                         <tr>
                             <td>{{ item.name }}</td>
-                            <td>{{ item.tasks.username }}</td>
-                            <td>{{ item.tasks.start_date }}</td>
-                            <td>{{ item.tasks.due_date }}</td>
-                            <td>{{ item.tasks.is_completed|yesno }}</td>
+                            <td>{{ item.assignee }}</td>
+                            <td>{{ item.start_date }}</td>
+                            <td>{{ item.due_date }}</td>
+                            <td>{{ item.is_completed|yesno }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
-            {% comment %} {% else %}
+            {% else %}
             <p>This project has no tasks</p>
-            {% endif %} {% endcomment %}
+            {% endif %}
         </div>
     </main>
 </body>
