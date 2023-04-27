@@ -1,51 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracker</title>
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'show_my_tasks' %}">My tasks</a></li>
-                    <li><a href="{% url 'list_projects' %}">My projects</a></li>
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tracker</title>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul>
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a href="{% url 'show_my_tasks' %}">My tasks</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'list_projects' %}">My projects</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'signup' %}">Signup</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div>
+                <h1>My Projects</h1>
+                <a href="{% url 'create_project' %}">Create a new project</a>
+                {% if list_projects %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Number of tasks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in list_projects %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'show_project' item.id %}">{{ item.name }}</a>
+                                    </td>
+                                    <td>{{ item.tasks.all|length }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% else %}
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                    <li><a href="{% url 'signup' %}">Signup</a></li>
+                    <p>You are not assigned to any projects</p>
                 {% endif %}
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <div>
-            <h1>My Projects</h1>
-            <a href="{% url 'create_project' %}">Create a new project</a>
-            {% if list_projects %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Number of tasks</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for item in list_projects %}
-                    <tr>
-                        <td><a href="{% url 'show_project' item.id %}">{{ item.name }}</a></td>
-                        <td>{{ item.tasks.all|length }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>You are not assigned to any projects</p>
-            {% endif %}
-        </div>
-    </main>
-</body>
+            </div>
+        </main>
+    </body>
 </html>

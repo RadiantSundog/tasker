@@ -1,54 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Tasks</title>
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'show_my_tasks' %}">My tasks</a></li>
-                    <li><a href="{% url 'list_projects' %}">My projects</a></li>
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Tasks</title>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul>
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a href="{% url 'show_my_tasks' %}">My tasks</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'list_projects' %}">My projects</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'signup' %}">Signup</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div>
+                <h1>My Tasks</h1>
+                {% if show_my_tasks %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Start date</th>
+                                <th>Due date</th>
+                                <th>Is completed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in show_my_tasks %}
+                                <tr>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.start_date }}</td>
+                                    <td>{{ item.due_date }}</td>
+                                    <td>{{ item.is_completed|yesno }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% else %}
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                    <li><a href="{% url 'signup' %}">Signup</a></li>
+                    <p>You have no tasks</p>
                 {% endif %}
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <div>
-            <h1>My Tasks</h1>
-            {% if show_my_tasks %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Start date</th>
-                            <th>Due date</th>
-                            <th>Is completed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for item in show_my_tasks %}
-                        <tr>
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.start_date }}</td>
-                            <td>{{ item.due_date }}</td>
-                            <td>{{ item.is_completed|yesno }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-                <p>You have no tasks</p>
-            {% endif %}
-        </div>
-    </main>
-</body>
+            </div>
+        </main>
+    </body>
 </html>
